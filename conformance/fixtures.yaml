@@ -1,0 +1,101 @@
+version: "0.1"
+
+fixtures:
+  - id: camera-topic-rename
+    claim: "Move RealSense driver ownership from MM to HAL while preserving existing consumers."
+    target: "public camera topic namespace"
+    required: false
+    authority: false
+    forbidden_delta:
+      active: true
+      description: "Existing topic contract must remain unchanged."
+      violated: true
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: false
+    expected: DENY
+    rationale: "Source ownership migration does not authorize public contract migration."
+
+  - id: camera-localmatch-blocker
+    claim: "Deliver CameraSnapshots through the existing three-repository path."
+    target: "generic LocalMatch authentication semantics"
+    required: true
+    authority: false
+    forbidden_delta:
+      active: false
+      violated: false
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: false
+    expected: HANDOFF
+    rationale: "Camera depends on LocalMatch but does not own generic authentication policy."
+
+  - id: adjacent-nonblocking-bug
+    claim: "Deliver the bounded camera snapshot path."
+    target: "unrelated nearby generic RPC cleanup"
+    required: false
+    authority: true
+    forbidden_delta:
+      active: false
+      violated: false
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: false
+    expected: RECORD_ONLY
+    rationale: "Being able to fix a nearby issue does not make it part of the current claim."
+
+  - id: reviewer-extra-optimization
+    claim: "Complete a bounded repository change."
+    target: "reviewer-proposed adjacent optimization"
+    required: true
+    authority: true
+    forbidden_delta:
+      active: false
+      violated: false
+    source: reviewer
+    coordinator_accepted: false
+    repeated_boundary_patching: false
+    expected: REQUIRE_GATE
+    rationale: "Review advice is evidence, not mutation authority."
+
+  - id: owned-required-local-fix
+    claim: "Fix the camera module parser bug."
+    target: "camera module parser"
+    required: true
+    authority: true
+    forbidden_delta:
+      active: false
+      violated: false
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: false
+    expected: ALLOW
+    rationale: "The mutation is necessary and lies inside the claim's authority."
+
+  - id: patch-chain-recheck
+    claim: "Complete a camera feature."
+    target: "another adjacent shared infrastructure patch"
+    required: true
+    authority: true
+    forbidden_delta:
+      active: false
+      violated: false
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: true
+    expected: BOUNDARY_RECHECK
+    rationale: "Repeated adjacent fixes are evidence that the decomposition or historical boundary may be wrong."
+
+  - id: feature-branch-private-build-environment
+    claim: "Build and test a feature branch in the repository-supported environment."
+    target: "install host-only dependencies and create a branch-private build path"
+    required: false
+    authority: true
+    forbidden_delta:
+      active: false
+      violated: false
+    source: executor
+    coordinator_accepted: true
+    repeated_boundary_patching: false
+    expected: RECORD_ONLY
+    rationale: "A compatible validated repository Docker/DevContainer/build path already exists; missing host dependencies do not make a private environment required."
